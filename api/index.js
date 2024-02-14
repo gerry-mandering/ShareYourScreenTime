@@ -112,7 +112,7 @@ function generateSVG(data) {
       <!-- Border Box -->
       <rect x="1" y="1" width="${svgWidth - 2}" height="${svgHeight - 2}" class="borderBox"/>
       <!-- Header -->
-      <text x="15" y="${headerPaddingTop}" class="header">Yesterday's App Usage</text>
+      <text x="15" y="${headerPaddingTop}" class="header">Yesterday's Screen Time</text>
       <!-- Placeholder for App Icons -->
       ${data.map((item, index) => {
         const yPos = barSpacing * index + iconPaddingTop + headerHeight;
