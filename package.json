@@ -1,8 +1,7 @@
 {
-  "name": "fastify",
-  "repository": "https://github.com/vercel/examples.git",
+  "name": "share-your-screen-time",
+  "repository": "https://github.com/gerry-mandering/ShareYourScreenTime",
   "license": "MIT",
-  "private": true,
   "dependencies": {
     "fastify": "^4.25.2"
   }
