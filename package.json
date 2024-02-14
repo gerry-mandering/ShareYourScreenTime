@@ -2,7 +2,11 @@
   "name": "share-your-screen-time",
   "repository": "https://github.com/gerry-mandering/ShareYourScreenTime",
   "license": "MIT",
+  "type": "module",
   "dependencies": {
-    "fastify": "^4.25.2"
+    "@vercel/node": "^3.0.19",
+    "@vercel/postgres": "^0.7.2",
+    "fastify": "^4.25.2",
+    "luxon": "^3.4.4"
   }
 }
