@@ -7,11 +7,10 @@ const app = Fastify({
 })
 
 app.get('/', async (req, reply) => {
-  const yesterday = DateTime.now().minus({ days: 1 }).setZone('Asia/Seoul').toISODate()
   const { rows } = await sql`
     SELECT app_name, usage_time, icon_url
     FROM screen_times
-    WHERE date = ${yesterday} 
+    WHERE date = (SELECT MAX(date) FROM screen_times)
     ORDER BY usage_time DESC 
     LIMIT 5
   `
