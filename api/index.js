@@ -15,7 +15,6 @@ app.get('/', async (req, reply) => {
     LIMIT 5
   `
   const svg = generateSVG(rows)
-  reply.header("Content-Security-Policy", "default-src 'self'; img-src 'self' data: https://is1-ssl.mzstatic.com;");
   return reply.status(200).type('image/svg+xml').send(svg)
 })
 
@@ -126,11 +125,6 @@ function generateSVG(data) {
     </svg>
   `;
 }
-
-app.addHook('onSend', (request, reply, payload, done) => {
-  reply.header("Content-Security-Policy", "default-src 'self'; img-src 'self' data: https://is1-ssl.mzstatic.com;");
-  done();
-});
 
 export default async function handler(req, res) {
   await app.ready()
