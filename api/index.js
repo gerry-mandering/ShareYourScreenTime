@@ -15,6 +15,7 @@ app.get('/', async (req, reply) => {
     LIMIT 5
   `
   const svg = generateSVG(rows)
+  reply.header("Content-Security-Policy", "default-src 'self'; img-src 'self' data: https://is1-ssl.mzstatic.com;");
   return reply.status(200).type('image/svg+xml').send(svg)
 })
 
