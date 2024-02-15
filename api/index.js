@@ -126,6 +126,11 @@ function generateSVG(data) {
   `;
 }
 
+app.addHook('onSend', (request, reply, payload, done) => {
+  reply.header("Content-Security-Policy", "default-src 'self'; img-src 'self' data: https://is1-ssl.mzstatic.com;");
+  done();
+});
+
 export default async function handler(req, res) {
   await app.ready()
   app.server.emit('request', req, res)
