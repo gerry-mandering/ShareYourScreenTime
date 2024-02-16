@@ -12,7 +12,7 @@ dependencies:
     specifier: ^0.7.2
     version: 0.7.2
   canvas:
-    specifier: ^2.11.2
+    specifier: ^2.6.1
     version: 2.11.2
   fastify:
     specifier: ^4.25.2
