@@ -1,12 +1,15 @@
 import Fastify from 'fastify'
 import fetch from 'node-fetch';
 import sharp from 'sharp';
+import healthcheck from 'fastify-healthcheck'
 import { sql } from '@vercel/postgres'
 import { getMonochromeTone } from '../utils/colorUtils.js'
 
 const app = Fastify({
   logger: true,
-})
+});
+
+app.register(healthcheck);
 
 app.get('/', async (req, reply) => {
   const { rows } = await sql`
@@ -18,7 +21,7 @@ app.get('/', async (req, reply) => {
   `
   const svg = await generateSVG(rows);
   return reply.status(200).type('image/svg+xml').send(svg);
-})
+});
 
 async function getBase64Image(imgUrl) {
   if (!imgUrl) {
