@@ -33,7 +33,6 @@ async function getBase64Image(imgUrl) {
       .png()
       .toBuffer()
       .then(data => `data:image/png;base64,${data.toString('base64')}`);
-    console.log('Image loaded:', dataURL.substring(0, 50) + '...');
     return dataURL;
   } catch (error) {
     throw error;
@@ -73,8 +72,8 @@ async function generateSVG(data) {
     const yPos = barSpacing * index + iconPaddingTop + headerHeight;
     const base64Icon = base64Icons[index];
     return `
-      <rect x="20" y="${yPos}" width="${iconSize}" height="${iconSize}" rx="${iconBorderRadius}" class="iconPlaceholder"/>
-      <image href="${base64Icon}" x="20" y="${yPos}" width="${iconSize}" height="${iconSize}" />
+      <rect x="20" y="${yPos}" width="${iconSize}" height="${iconSize}" class="iconPlaceholder"/>
+      <image href="${base64Icon}" x="20" y="${yPos}" width="${iconSize}" height="${iconSize}" class="iconImage"/>
     `;
   }).join('');
   
@@ -90,23 +89,24 @@ async function generateSVG(data) {
   let appUsageContent = data.map((item, index) => {
     const yPos = barSpacing * index + iconPaddingTop + headerHeight;
     return `
-      <text x="260" y="${yPos + textPaddingTop}" class="appText">${Math.round(item.usage_time / 60)} min</text>
+      <text x="260" y="${yPos + textPaddingTop}" class="appUsage">${Math.round(item.usage_time / 60)} min</text>
     `;
   }).join('');
 
   return `
     <svg xmlns="http://www.w3.org/2000/svg" width="${svgWidth}" height="${svgHeight}">
       <style>
-        .appText { font: 13px sans-serif; font-weight: 600; fill: #808080; }
-        .iconPlaceholder { fill: lightgray; }
-        .header { font: bold 16px sans-serif; fill: #505050; }
         .borderBox { fill: none; stroke: #D3D3D3; stroke-width: ${borderThickness}; rx: ${borderBoxRadius}; }
+        .header { font: bold 16px sans-serif; fill: #505050; }
+        .iconPlaceholder { fill: lightgray; rx: ${iconBorderRadius}px; }
+        .iconImage { border-radius: ${iconBorderRadius}px; }
+        .appUsage { font: 13px sans-serif; font-weight: 600; fill: #808080; }
       </style>
       <!-- Border Box -->
       <rect x="1" y="1" width="${svgWidth - 2}" height="${svgHeight - 2}" class="borderBox"/>
       <!-- Header -->
       <text x="20" y="${headerPaddingTop}" class="header">Yesterday's Screen Time</text>
-      <!-- Placeholder for App Icons -->
+      <!-- App Icons -->
       ${iconContent}
       <!-- Horizontal Bars representing App Usage -->
       ${barContent}
