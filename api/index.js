@@ -1,6 +1,7 @@
 import Fastify from 'fastify'
+import fetch from 'node-fetch';
+import sharp from 'sharp';
 import { sql } from '@vercel/postgres'
-import { createCanvas, loadImage } from 'canvas';
 import { getMonochromeTone } from '../utils/colorUtils.js'
 
 const app = Fastify({
@@ -24,19 +25,19 @@ async function getBase64Image(imgUrl) {
     throw new Error('Invalid image URL');
   }
 
-  return new Promise(async (resolve, reject) => {
-      try {
-          const img = await loadImage(imgUrl);
-          const canvas = createCanvas(img.width, img.height);
-          const ctx = canvas.getContext('2d');
-          ctx.drawImage(img, 0, 0);
-          const dataURL = canvas.toDataURL('image/png');
-          console.log('Image loaded:', dataURL.substring(0, 50) + '...');
-          resolve(dataURL);
-      } catch (error) {
-          reject(error);
-      }
-  });
+  try {
+    const response = await fetch(imgUrl);
+    if (!response.ok) throw new Error(`Failed to fetch image: ${response.statusText}`);
+    const buffer = await response.buffer();
+    const dataURL = await sharp(buffer)
+      .png()
+      .toBuffer()
+      .then(data => `data:image/png;base64,${data.toString('base64')}`);
+    console.log('Image loaded:', dataURL.substring(0, 50) + '...');
+    return dataURL;
+  } catch (error) {
+    throw error;
+  }
 }
 
 async function generateSVG(data) {
