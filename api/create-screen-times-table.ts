@@ -12,7 +12,8 @@ export default async function handler(
         date DATE NOT NULL,
         app_name VARCHAR(255) NOT NULL,
         usage_time INT NOT NULL,
-        icon_url VARCHAR(255) NOT NULL
+        icon_url VARCHAR(255) NOT NULL,
+        UNIQUE (date, app_name)
       );
     `;
     return response.status(200).json({ result });
