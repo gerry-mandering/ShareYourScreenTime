@@ -31,7 +31,7 @@ function generateSVG(data) {
   const iconBorderRadius = 4; // Border radius for icons and bars
   const headerHeight = 40; // Height for the header
   const headerPaddingTop = 30; // Padding for the header
-  const svgWidth = 305;
+  const svgWidth = 320;
   const svgHeight = data.length * barSpacing + iconPaddingTop + headerHeight + 5;
   const borderThickness = 1; // Increased border thickness
   const borderBoxRadius = 10; // Border radius for the border box
@@ -42,8 +42,8 @@ function generateSVG(data) {
     const yPos = barSpacing * index + iconPaddingTop + headerHeight;
     const barColor = getMonochromeTone(baseHue);
     return `
-      <rect x="45" y="${yPos + barPaddingTop}" width="${barWidth}" height="${barHeight}" rx="${barBorderRadius}" fill="${barColor}" />
-      <text x="255" y="${yPos + textPaddingTop}" class="appText">${Math.round(item.usage_time / 60)} min</text>
+      <rect x="50" y="${yPos + barPaddingTop}" width="${barWidth}" height="${barHeight}" rx="${barBorderRadius}" fill="${barColor}" />
+      <text x="260" y="${yPos + textPaddingTop}" class="appText">${Math.round(item.usage_time / 60)} min</text>
     `;
   }).join('');
 
@@ -52,19 +52,19 @@ function generateSVG(data) {
       <style>
         .appText { font: 13px sans-serif; font-weight: 600; fill: #808080; }
         .iconPlaceholder { fill: lightgray; }
-        .header { font: bold 16px sans-serif; fill: #696969; }
+        .header { font: bold 16px sans-serif; fill: #505050; }
         .borderBox { fill: none; stroke: #D3D3D3; stroke-width: ${borderThickness}; rx: ${borderBoxRadius}; }
       </style>
       <!-- Border Box -->
       <rect x="1" y="1" width="${svgWidth - 2}" height="${svgHeight - 2}" class="borderBox"/>
       <!-- Header -->
-      <text x="15" y="${headerPaddingTop}" class="header">Yesterday's Screen Time</text>
+      <text x="20" y="${headerPaddingTop}" class="header">Yesterday's Screen Time</text>
       <!-- Placeholder for App Icons -->
       ${data.map((item, index) => {
         const yPos = barSpacing * index + iconPaddingTop + headerHeight;
         return `
-          <rect x="15" y="${yPos}" width="${iconSize}" height="${iconSize}" rx="${iconBorderRadius}" class="iconPlaceholder"/>
-          <image href="${item.icon_url}" x="15" y="${yPos}" width="${iconSize}" height="${iconSize}" />
+          <rect x="20" y="${yPos}" width="${iconSize}" height="${iconSize}" rx="${iconBorderRadius}" class="iconPlaceholder"/>
+          <image href="${item.icon_url}" x="20" y="${yPos}" width="${iconSize}" height="${iconSize}" />
         `;
       }).join('')}
       <!-- Horizontal Bars for App Usage -->
