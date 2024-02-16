@@ -1,5 +1,6 @@
 import Fastify from 'fastify'
 import { sql } from '@vercel/postgres'
+import { createCanvas, loadImage } from 'canvas';
 import { getMonochromeTone } from '../utils/colorUtils.js'
 
 const app = Fastify({
@@ -14,11 +15,31 @@ app.get('/', async (req, reply) => {
     ORDER BY usage_time DESC 
     LIMIT 5
   `
-  const svg = generateSVG(rows)
-  return reply.status(200).type('image/svg+xml').send(svg)
+  const svg = await generateSVG(rows);
+  return reply.status(200).type('image/svg+xml').send(svg);
 })
 
-function generateSVG(data) {
+async function getBase64Image(imgUrl) {
+  if (!imgUrl) {
+    throw new Error('Invalid image URL');
+  }
+
+  return new Promise(async (resolve, reject) => {
+      try {
+          const img = await loadImage(imgUrl);
+          const canvas = createCanvas(img.width, img.height);
+          const ctx = canvas.getContext('2d');
+          ctx.drawImage(img, 0, 0);
+          const dataURL = canvas.toDataURL('image/png');
+          console.log('Image loaded:', dataURL.substring(0, 50) + '...');
+          resolve(dataURL);
+      } catch (error) {
+          reject(error);
+      }
+  });
+}
+
+async function generateSVG(data) {
   const maxBarWidth = 200;
   const maxUsageTime = Math.max(...data.map(item => item.usage_time));
   const barPaddingTop = 4;
@@ -27,22 +48,47 @@ function generateSVG(data) {
   const iconSize = 20;
   const iconPaddingTop = 5;
   const textPaddingTop = 15;
-  const barBorderRadius = 6; // Border radius for bars
-  const iconBorderRadius = 4; // Border radius for icons and bars
-  const headerHeight = 40; // Height for the header
-  const headerPaddingTop = 30; // Padding for the header
+  const barBorderRadius = 6;
+  const iconBorderRadius = 4;
+  const headerHeight = 40;
+  const headerPaddingTop = 30;
   const svgWidth = 320;
   const svgHeight = data.length * barSpacing + iconPaddingTop + headerHeight + 5;
-  const borderThickness = 1; // Increased border thickness
-  const borderBoxRadius = 10; // Border radius for the border box
+  const borderThickness = 1;
+  const borderBoxRadius = 10;
   const baseHue = Math.floor(Math.random() * 360);
+
+  // Convert icon URLs to Base64 strings
+  const base64Icons = await Promise.all(data.map(async (item) => {
+    try {
+      return await getBase64Image(item.icon_url);
+    } catch (error) {
+      console.error(`Error loading image from URL ${item.icon_url}:`, error);
+      return null;
+    }
+  }));
+
+  let iconContent = data.map((item, index) => {
+    const yPos = barSpacing * index + iconPaddingTop + headerHeight;
+    const base64Icon = base64Icons[index];
+    return `
+      <rect x="20" y="${yPos}" width="${iconSize}" height="${iconSize}" rx="${iconBorderRadius}" class="iconPlaceholder"/>
+      <image href="${base64Icon}" x="20" y="${yPos}" width="${iconSize}" height="${iconSize}" />
+    `;
+  }).join('');
   
-  let svgContent = data.map((item, index) => {
+  let barContent = data.map((item, index) => {
     const barWidth = (item.usage_time / maxUsageTime) * maxBarWidth;
     const yPos = barSpacing * index + iconPaddingTop + headerHeight;
     const barColor = getMonochromeTone(baseHue);
     return `
       <rect x="50" y="${yPos + barPaddingTop}" width="${barWidth}" height="${barHeight}" rx="${barBorderRadius}" fill="${barColor}" />
+    `;
+  }).join('');
+
+  let appUsageContent = data.map((item, index) => {
+    const yPos = barSpacing * index + iconPaddingTop + headerHeight;
+    return `
       <text x="260" y="${yPos + textPaddingTop}" class="appText">${Math.round(item.usage_time / 60)} min</text>
     `;
   }).join('');
@@ -60,15 +106,11 @@ function generateSVG(data) {
       <!-- Header -->
       <text x="20" y="${headerPaddingTop}" class="header">Yesterday's Screen Time</text>
       <!-- Placeholder for App Icons -->
-      ${data.map((item, index) => {
-        const yPos = barSpacing * index + iconPaddingTop + headerHeight;
-        return `
-          <rect x="20" y="${yPos}" width="${iconSize}" height="${iconSize}" rx="${iconBorderRadius}" class="iconPlaceholder"/>
-          <image href="${item.icon_url}" x="20" y="${yPos}" width="${iconSize}" height="${iconSize}" />
-        `;
-      }).join('')}
-      <!-- Horizontal Bars for App Usage -->
-      ${svgContent}
+      ${iconContent}
+      <!-- Horizontal Bars representing App Usage -->
+      ${barContent}
+      <!-- App Usage Text -->
+      ${appUsageContent}
     </svg>
   `;
 }
