@@ -22,10 +22,11 @@ export default async function handler(
       `;
       const iconUrl = appIconRows.length > 0 ? appIconRows[0].icon_url : '';
       
-      // Insert data into ScreenTime, including the icon URL
       await sql`
         INSERT INTO screen_times (date, app_name, usage_time, icon_url)
-        VALUES (${date}, ${appName}, ${usageTime}, ${iconUrl});
+        VALUES (${date}, ${appName}, ${usageTime}, ${iconUrl})
+        ON CONFLICT (date, app_name) DO UPDATE
+        SET usage_time = EXCLUDED.usage_time;
       `;
     }
     
