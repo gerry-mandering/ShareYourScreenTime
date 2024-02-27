@@ -1,22 +1,40 @@
-# Fastify + Vercel
+# ShareYourScreenTime
+**ShareYourScreenTime** is a project designed to track and visualize your daily screen time from your iPhone. It collects data on how much time you spend on different apps and presents this information in SVG format.
 
-This example shows how to use Fastify with Vercel Functions.
+## Quick Demo
+[![Yesterday's Screen Time](https://share-your-screen-time.vercel.app)](https://github.com/gerry-mandering/ShareYourScreenTime)
 
-## Demo
+## Ideas
+> **Disclaimer**: I highly recommend not attempting this at home. Currently, there is no official method to access iPhone's screen time data. This project operates by extracting data from Mac's system files following the synchronization of screen time between iPhone and Mac via iCloud.
 
-https://fastify-example.vercel.app/
+This project was initiated following the inspiration from Felix Kohlhas's work, [Exporting and Analyzing iOS Screen Time Data using Python and InfluxDB](https://felixkohlhas.com/projects/screentime/), with the objective of publicly disseminating my screen time data as a measure to combat phone addiction.
 
-## Running Locallly
+## Key Features
 
-```bash
-npm i
-npm i -g vercel@latest
-vercel dev
-```
+**Data Collection**: This process involves the use of a Python script coupled with a Shell script to extract data pertaining to screen time, which is subsequently transmitted to a Vercel server and stored within a Postgres database.
 
-## One-Click Deploy
+**Visualization**: Generates dynamic SVG with bar chart to visualize yesterday's screen time data.
 
-Deploy the example using [Vercel](https://vercel.com?utm_source=github&utm_medium=readme&utm_campaign=vercel-examples):
+## Installation Guide
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/vercel/examples/tree/main/starter/fastify&project-name=fastify&repository-name=fastify)
+To set up **ShareYourScreenTime** for personal use, follow these steps:
 
+1. **Enable Screen Time Sharing**: On your iPhone, go to Screen Time settings and activate the `Share Across Devices` option.
+2. **Clone the Repository**: Clone this project to your local
+3. **Deploy on Vercel**: Push the cloned repository to Vercel for hosting.
+4. **Database Connection**: Link the Vercel server with a Postgres database hosted on Vercel.
+5. **Configure Database**: Insert the app icon URLs into the database as specified in the `create-app-icons-table.ts` schema.
+6. **Virtual Environment Setup**: Run the following commands to set up the Python virtual environment:
+   
+   ```sh
+   python -m venv venv
+   source venv/bin/activate
+   pip install -r requirements.txt
+   ```
+
+7. **Environment Variable Setup**: Fill in the `VERCEL_DOMAIN` and `DEVICE_MODEL` in the `/script/crawler/.env` file.
+8. **Script Permissions**: Ensure `/script/cron/run.sh` is executable by modifying its permissions.
+9. **Cron Job**: Schedule a cron job to run `/script/cron/run.sh` at regular intervals to collect screen time data. (Note: This is essential as Apple does not facilitate real-time synchronization of screen time data).
+ 
+## Current Limitations
+A notable constraint, as previously highlighted, is Apple's lack of support for real-time synchronization of screen time data. Consequently, this can result in occasional omissions of screen time data.
