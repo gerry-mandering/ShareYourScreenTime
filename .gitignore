@@ -43,4 +43,6 @@ venv
 
 # scripts
 run.sh
+logfile.log
+last_run_date.txt
 ```

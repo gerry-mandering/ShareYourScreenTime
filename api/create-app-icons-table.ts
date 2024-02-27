@@ -1,10 +1,7 @@
 import { sql } from '@vercel/postgres';
 import { VercelRequest, VercelResponse } from '@vercel/node';
 
-export default async function handler(
-  request: VercelRequest,
-  response: VercelResponse,
-) {
+export default async function handler(request: VercelRequest, response: VercelResponse) {
   try {
     const result = await sql`
       CREATE TABLE app_icons (
