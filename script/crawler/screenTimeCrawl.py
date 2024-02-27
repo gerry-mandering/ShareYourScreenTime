@@ -96,12 +96,15 @@ def transform_data(rows):
     return data
 
 def print_sorted_data(data):
+    print("<Screen Time Data>")
+
     # Sort by date in descending order
     for date in sorted(data.keys(), reverse=True):
         apps = data[date]
         # Sort by usage in descending order
         for app, usage in sorted(apps.items(), key=lambda item: item[1], reverse=True):
             print(f"Date: {date}, App: {app}, Usage: {usage}")
+    print()
 
 def send_data_to_server(data):
     url = os.getenv('VERCEL_DOMAIN')
@@ -117,6 +120,8 @@ def send_data_to_server(data):
             })
     
     response = requests.post(url, headers=headers, data=json.dumps(screen_time_data))
+
+    print("<Server Response>")
     
     if response.status_code == 200:
         print("Data sent successfully")
