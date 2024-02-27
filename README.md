@@ -2,7 +2,11 @@
 **ShareYourScreenTime** is a project designed to track and visualize your daily screen time from your iPhone. It collects data on how much time you spend on different apps and presents this information in SVG format.
 
 ## Quick Demo
-[![Yesterday's Screen Time](https://share-your-screen-time.vercel.app)](https://github.com/gerry-mandering/ShareYourScreenTime)
+<p align="center">
+  <a href="https://github.com/gerry-mandering/ShareYourScreenTime">
+    <img src="https://share-your-screen-time.vercel.app" alt="Yesterday's Screen Time">
+  </a>
+</p>
 
 ## Ideas
 > **Disclaimer**: I highly recommend not attempting this at home. Currently, there is no official method to access iPhone's screen time data. This project operates by extracting data from Mac's system files following the synchronization of screen time between iPhone and Mac via iCloud.
