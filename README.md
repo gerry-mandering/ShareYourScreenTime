@@ -9,7 +9,7 @@
 </p>
 
 ## Ideas
-> **Disclaimer**: I highly recommend not attempting this at home. Currently, there is no official method to access iPhone's screen time data. This project operates by extracting data from Mac's system files following the synchronization of screen time between iPhone and Mac via iCloud.
+> **⚠️ Disclaimer**: I highly recommend not attempting this at home. Currently, there is no official method to access iPhone's screen time data. This project operates by extracting data from Mac's system files following the synchronization of screen time between iPhone and Mac via iCloud.
 
 This project was initiated following the inspiration from Felix Kohlhas's work, [Exporting and Analyzing iOS Screen Time Data using Python and InfluxDB](https://felixkohlhas.com/projects/screentime/), with the objective of publicly disseminating my screen time data as a measure to combat phone addiction.
 
