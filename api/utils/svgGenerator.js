@@ -52,11 +52,13 @@ async function generateIconContent(data, base64Icons) {
 }
 
 function generateBarContent(data, maxUsageTime) {
+  const baseHue = Math.floor(Math.random() * 360);
+
   return data
     .map((item, index) => {
       const barWidth = (item.usage_time / maxUsageTime) * SVG_CONFIG.maxBarWidth;
       const yPos = SVG_CONFIG.barSpacing * index + SVG_CONFIG.iconPaddingTop + SVG_CONFIG.headerHeight;
-      const barColor = getMonochromeTone(Math.floor(Math.random() * 360));
+      const barColor = getMonochromeTone(baseHue);
       return `
         <rect x="50" y="${yPos + SVG_CONFIG.barPaddingTop}" width="${barWidth}" height="${SVG_CONFIG.barHeight}" rx="${
         SVG_CONFIG.barBorderRadius
